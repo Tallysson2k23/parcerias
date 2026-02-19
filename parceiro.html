@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel Parceiro</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f1f4f9;
+    }
+
+    /* ================= LOGIN ================= */
+
+    .login-wrapper {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .login-container {
+      background: white;
+      padding: 40px;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+
+    .login-container h3 {
+      margin-bottom: 20px;
+      text-align: center;
+      color: #1e3c72;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #2a5298;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      background: #2a5298;
+      border: none;
+      color: white;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn-primary:hover {
+      background: #1e3c72;
+    }
+
+    .erro {
+      color: red;
+      margin-top: 8px;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    /* ================= PAINEL ================= */
+
+    .painel {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 230px;
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      color: white;
+      padding: 25px 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar h2 {
+      font-size: 16px;
+      margin-bottom: 30px;
+      word-break: break-word;
+    }
+
+    .menu-btn {
+      background: transparent;
+      border: none;
+      color: white;
+      padding: 12px;
+      margin-bottom: 10px;
+      text-align: left;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-size: 14px;
+    }
+
+    .menu-btn:hover {
+      background: rgba(255,255,255,0.15);
+    }
+
+    .btn-logout {
+      margin-top: auto;
+      background: #e74c3c;
+      text-align: center;
+    }
+
+    .btn-logout:hover {
+      background: #c0392b;
+    }
+
+    .main {
+      flex: 1;
+      padding: 30px;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 14px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      margin-bottom: 25px;
+    }
+
+    .card h3 {
+      margin-bottom: 20px;
+      color: #1e3c72;
+    }
+
+    .codigo-input {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .codigo-input input {
+      flex: 1;
+      min-width: 150px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      background: #2a5298;
+      color: white;
+      padding: 12px;
+      text-align: left;
+    }
+
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+    }
+
+    tr:hover {
+      background: #f8f9fb;
+    }
+
+    /* ================= RESPONSIVO ================= */
+
+    @media (max-width: 900px) {
+      .painel {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+        overflow-x: auto;
+      }
+
+      .sidebar h2 {
+        display: none;
+      }
+
+      .menu-btn {
+        flex: 1;
+        text-align: center;
+        margin-bottom: 0;
+      }
+
+      .btn-logout {
+        margin-top: 0;
+      }
+
+      .main {
+        padding: 20px;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div id="areaLogin" class="login-wrapper">
+  <div class="login-container">
+    <h3>Login Parceiro</h3>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="senha" placeholder="Senha">
+    <button class="btn-primary" onclick="login()">Entrar</button>
+    <p id="mensagemLogin" class="erro"></p>
+  </div>
+</div>
+
+<!-- PAINEL -->
+<div id="areaPainel" class="painel" style="display:none;">
+
+  <div class="sidebar">
+    <h2 id="usuarioLogado"></h2>
+
+    <button class="menu-btn" onclick="mostrarValidacao()">Validar Código</button>
+    <button class="menu-btn" onclick="mostrarRelatorio()">Relatórios</button>
+    <button class="menu-btn btn-logout" onclick="logout()">Sair</button>
+  </div>
+
+  <div class="main">
+
+    <div id="areaValidacao" class="card">
+      <h3>Validar Código</h3>
+      <div class="codigo-input">
+        <input type="text" id="codigo" placeholder="Digite o código">
+        <button class="btn-primary" onclick="validar()">Validar</button>
+      </div>
+      <p id="resultado"></p>
+    </div>
+
+    <div id="areaRelatorio" class="card" style="display:none;">
+      <h3>Relatório de Descontos</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>CPF</th>
+            <th>Desconto</th>
+            <th>Data</th>
+          </tr>
+        </thead>
+        <tbody id="tabelaRelatorio"></tbody>
+      </table>
+    </div>
+
+  </div>
+
+</div>
+
+<script type="module">
+import { auth, db } from "./firebase.js";
+import { 
+  signInWithEmailAndPassword, 
+  onAuthStateChanged, 
+  signOut 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+import { 
+  collection, 
+  query, 
+  where, 
+  getDocs, 
+  updateDoc, 
+  doc, 
+  serverTimestamp, 
+  addDoc, 
+  orderBy 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+let usuarioAtual = null;
+let estaSaindo = false; // 🔥 CONTROLE DE LOGOUT
+
+onAuthStateChanged(auth, (user) => {
+
+  // Se está saindo, não faz nada
+  if (estaSaindo) return;
+
+  if (user) {
+    usuarioAtual = user;
+    document.getElementById("areaLogin").style.display = "none";
+    document.getElementById("areaPainel").style.display = "flex";
+    document.getElementById("usuarioLogado").innerText = user.email;
+  } else {
+    // Se não está logado, manda direto para login principal
+    window.location.href = "index.html";
+  }
+});
+
+window.login = async function() {
+  try {
+    await signInWithEmailAndPassword(
+      auth,
+      document.getElementById("email").value,
+      document.getElementById("senha").value
+    );
+  } catch {
+    document.getElementById("mensagemLogin").innerText = "Email ou senha inválidos!";
+  }
+}
+
+window.logout = async function() {
+  estaSaindo = true; // 🔥 ATIVA CONTROLE
+  await signOut(auth);
+  window.location.replace("index.html"); // 🔥 replace evita histórico
+}
+
+window.mostrarValidacao = function() {
+  document.getElementById("areaValidacao").style.display = "block";
+  document.getElementById("areaRelatorio").style.display = "none";
+}
+
+window.mostrarRelatorio = async function() {
+
+  document.getElementById("areaValidacao").style.display = "none";
+  document.getElementById("areaRelatorio").style.display = "block";
+
+  const tabela = document.getElementById("tabelaRelatorio");
+  tabela.innerHTML = "";
+
+  const q = query(
+    collection(db, "historico"),
+    where("parceiroEmail", "==", usuarioAtual.email),
+    orderBy("dataHora", "desc")
+  );
+
+  const snapshot = await getDocs(q);
+
+  snapshot.forEach(docSnap => {
+    const dados = docSnap.data();
+    const dataFormatada = dados.dataHora?.toDate().toLocaleString();
+
+    tabela.innerHTML += `
+      <tr>
+        <td>${dados.cpf}</td>
+        <td>${dados.desconto}%</td>
+        <td>${dataFormatada}</td>
+      </tr>
+    `;
+  });
+}
+
+window.validar = async function() {
+
+  const codigoDigitado = document.getElementById("codigo").value;
+
+  const q = query(
+    collection(db, "codigos"),
+    where("codigo", "==", codigoDigitado),
+    where("status", "==", "pendente")
+  );
+
+  const snapshot = await getDocs(q);
+
+  if (snapshot.empty) {
+    document.getElementById("resultado").innerText = "Código inválido ou já utilizado!";
+    return;
+  }
+
+  snapshot.forEach(async (docSnap) => {
+
+    await updateDoc(doc(db, "codigos", docSnap.id), {
+      status: "validado",
+      validadoEm: serverTimestamp(),
+      validadoPor: usuarioAtual.email
+    });
+
+    await addDoc(collection(db, "historico"), {
+      cpf: docSnap.data().cpf,
+      desconto: 5,
+      parceiroEmail: usuarioAtual.email,
+      dataHora: serverTimestamp()
+    });
+
+    document.getElementById("resultado").innerText = "Desconto aplicado com sucesso!";
+  });
+}
+</script>
+
+
+</body>
+</html>
